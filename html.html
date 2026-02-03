@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For You 💕</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial Rounded MT Bold', 'Arial', sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(45deg, #ff9a9e, #fad0c4, #fad0c4, #a18cd1);
+            background-size: 400% 400%;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            animation: gradientBG 15s ease infinite;
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .container {
+            text-align: center;
+            padding: 40px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+            max-width: 600px;
+            width: 90%;
+            border: 10px solid #ff7eb3;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hearts {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        
+        .heart {
+            position: absolute;
+            font-size: 24px;
+            opacity: 0.5;
+            animation: float 5s linear infinite;
+        }
+        
+        @keyframes float {
+            from { transform: translateY(100vh) rotate(0deg); }
+            to { transform: translateY(-100px) rotate(360deg); }
+        }
+        
+        h1 {
+            color: #ff4081;
+            font-size: 4rem;
+            margin-bottom: 50px;
+            text-shadow: 3px 3px 0 #ffcce0;
+            position: relative;
+            z-index: 1;
+            padding: 20px;
+        }
+        
+        .emoji {
+            font-size: 5rem;
+            margin-bottom: 30px;
+            display: block;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+        
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            flex-wrap: wrap;
+            margin-top: 40px;
+            position: relative;
+            min-height: 120px;
+        }
+        
+        .btn {
+            padding: 20px 50px;
+            font-size: 2rem;
+            border: none;
+            border-radius: 60px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            z-index: 2;
+            position: relative;
+            min-width: 180px;
+        }
+        
+        .yes-btn {
+            background: linear-gradient(145deg, #43e97b, #38f9d7);
+            color: white;
+        }
+        
+        .yes-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 15px 30px rgba(67, 233, 123, 0.4);
+        }
+        
+        .no-btn {
+            background: linear-gradient(145deg, #ff7eb3, #ff758c);
+            color: white;
+            position: absolute;
+        }
+        
+        .no-btn:hover {
+            transform: scale(1.05);
+        }
+        
+        .response {
+            font-size: 3rem;
+            color: #ff4081;
+            margin-top: 40px;
+            min-height: 80px;
+            opacity: 0;
+            transition: opacity 0.5s;
+            font-weight: bold;
+            text-shadow: 2px 2px 0 #ffcce0;
+        }
+        
+        .show {
+            opacity: 1;
+        }
+        
+        .hint {
+            margin-top: 30px;
+            color: #ff7eb3;
+            font-style: italic;
+            font-size: 1.2rem;
+        }
+        
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 3rem;
+            }
+            
+            .emoji {
+                font-size: 4rem;
+            }
+            
+            .btn {
+                padding: 15px 35px;
+                font-size: 1.5rem;
+                min-width: 140px;
+            }
+            
+            .response {
+                font-size: 2.5rem;
+            }
+            
+            .buttons {
+                min-height: 150px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            .emoji {
+                font-size: 3rem;
+            }
+            
+            .btn {
+                padding: 12px 25px;
+                font-size: 1.3rem;
+                min-width: 120px;
+            }
+            
+            .response {
+                font-size: 2rem;
+            }
+            
+            .buttons {
+                min-height: 180px;
+                gap: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="hearts" id="hearts"></div>
+        
+        <span class="emoji">💖😊💖</span>
+        
+        <h1>Do you love me? 💕</h1>
+        
+        <div class="buttons">
+            <button class="btn yes-btn" id="yesBtn">YES!</button>
+            <button class="btn no-btn" id="noBtn">No</button>
+        </div>
+        
+        <div class="response" id="response">I knew it 😉</div>
+        
+        <div class="hint">Psst... try clicking "No" 😜</div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const yesBtn = document.getElementById('yesBtn');
+            const noBtn = document.getElementById('noBtn');
+            const response = document.getElementById('response');
+            const heartsContainer = document.getElementById('hearts');
+            
+            // Create floating hearts
+            function createHearts() {
+                for (let i = 0; i < 20; i++) {
+                    const heart = document.createElement('div');
+                    heart.classList.add('heart');
+                    heart.innerHTML = '❤️';
+                    heart.style.left = Math.random() * 100 + '%';
+                    heart.style.fontSize = (Math.random() * 20 + 15) + 'px';
+                    heart.style.animationDelay = Math.random() * 5 + 's';
+                    heartsContainer.appendChild(heart);
+                }
+            }
+            
+            createHearts();
+            
+            // Yes button click
+            yesBtn.addEventListener('click', function() {
+                response.textContent = "I knew it 😉";
+                response.classList.add('show');
+                
+                // Create celebration hearts
+                for (let i = 0; i < 30; i++) {
+                    setTimeout(() => createCelebrationHeart(), i * 100);
+                }
+                
+                // Play sound
+                playYesSound();
+            });
+            
+            // No button interaction
+            noBtn.addEventListener('mouseover', moveNoButton);
+            noBtn.addEventListener('touchstart', function(e) {
+                e.preventDefault();
+                moveNoButton();
+            });
+            
+            noBtn.addEventListener('click', function(e) {
+                // Very small chance to actually click it
+                if (Math.random() < 0.05) {
+                    response.textContent = "Really? 😢";
+                    response.classList.add('show');
+                    setTimeout(() => {
+                        response.classList.remove('show');
+                    }, 2000);
+                } else {
+                    moveNoButton();
+                }
+            });
+            
+            function moveNoButton() {
+                const buttonsContainer = document.querySelector('.buttons');
+                const containerRect = buttonsContainer.getBoundingClientRect();
+                
+                const maxX = containerRect.width - noBtn.offsetWidth;
+                const maxY = containerRect.height - noBtn.offsetHeight;
+                
+                const newX = Math.random() * maxX;
+                const newY = Math.random() * maxY;
+                
+                noBtn.style.left = newX + 'px';
+                noBtn.style.top = newY + 'px';
+                
+                // Change button text sometimes
+                const messages = [
+                    "No", "Nope", "Try again", "Not today", 
+                    "Can't catch me", "Maybe later", "Nice try",
+                    "Oops", "Missed me", "Too slow"
+                ];
+                
+                if (Math.random() > 0.7) {
+                    noBtn.textContent = messages[Math.floor(Math.random() * messages.length)];
+                }
+                
+                playMoveSound();
+            }
+            
+            function createCelebrationHeart() {
+                const heart = document.createElement('div');
+                heart.innerHTML = '❤️';
+                heart.style.position = 'fixed';
+                heart.style.fontSize = (Math.random() * 30 + 20) + 'px';
+                heart.style.color = '#ff4081';
+                heart.style.left = Math.random() * 100 + 'vw';
+                heart.style.top = '100vh';
+                heart.style.zIndex = '9999';
+                heart.style.pointerEvents = 'none';
+                document.body.appendChild(heart);
+                
+                const animation = heart.animate([
+                    { transform: 'translateY(0) scale(1)', opacity: 1 },
+                    { transform: `translateY(-${window.innerHeight + 100}px) scale(1.5)`, opacity: 0 }
+                ], {
+                    duration: Math.random() * 2000 + 1500,
+                    easing: 'cubic-bezier(0.215, 0.61, 0.355, 1)'
+                });
+                
+                animation.onfinish = () => heart.remove();
+            }
+            
+            function playYesSound() {
+                try {
+                    const context = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = context.createOscillator();
+                    const gainNode = context.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(context.destination);
+                    
+                    // Play a happy ascending melody
+                    const notes = [523.25, 659.25, 783.99, 1046.50]; // C5, E5, G5, C6
+                    
+                    oscillator.frequency.setValueAtTime(notes[0], context.currentTime);
+                    oscillator.frequency.setValueAtTime(notes[1], context.currentTime + 0.1);
+                    oscillator.frequency.setValueAtTime(notes[2], context.currentTime + 0.2);
+                    oscillator.frequency.setValueAtTime(notes[3], context.currentTime + 0.3);
+                    
+                    oscillator.type = 'sine';
+                    
+                    gainNode.gain.setValueAtTime(0.3, context.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.5);
+                    
+                    oscillator.start(context.currentTime);
+                    oscillator.stop(context.currentTime + 0.5);
+                } catch(e) {
+                    // Audio not supported, continue silently
+                }
+            }
+            
+            function playMoveSound() {
+                try {
+                    const context = new (window.AudioContext || window.webkitAudioContext)();
+                    const oscillator = context.createOscillator();
+                    const gainNode = context.createGain();
+                    
+                    oscillator.connect(gainNode);
+                    gainNode.connect(context.destination);
+                    
+                    oscillator.frequency.value = 220 + Math.random() * 100; // Random pitch
+                    oscillator.type = 'triangle';
+                    
+                    gainNode.gain.setValueAtTime(0.1, context.currentTime);
+                    gainNode.gain.exponentialRampToValueAtTime(0.01, context.currentTime + 0.3);
+                    
+                    oscillator.start(context.currentTime);
+                    oscillator.stop(context.currentTime + 0.3);
+                } catch(e) {
+                    // Audio not supported, continue silently
+                }
+            }
+            
+            // Initialize the no button position
+            moveNoButton();
+        });
+    </script>
+</body>
+</html>
+            };
+            
+            recognition.onend = function() {
+                isListening = false;
+                voiceBtn.classList.remove('listening');
+                instruction.textContent = "Click the microphone to speak with J.A.R.V.I.S.";
+            };
+            
+            recognition.onerror = function(event) {
+                console.error('Speech recognition error', event.error);
+                isListening = false;
+                voiceBtn.classList.remove('listening');
+                instruction.textContent = "Click the microphone to speak with J.A.R.V.I.S.";
+                addMessage("Error with voice recognition. Please try again.", "user");
+                setTimeout(() => {
+                    addJarvisResponse("I apologize for the technical difficulty. Please try speaking again or type your command.");
+                }, 500);
+            };
+        } else {
+            voiceBtn.style.display = 'none';
+            instruction.textContent = "Voice recognition not supported in your browser. Please type your commands.";
+        }
+        
+        // Event Listeners
+        voiceBtn.addEventListener('click', toggleVoiceRecognition);
+        sendBtn.addEventListener('click', sendTextCommand);
+        userInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendTextCommand();
+            }
+        });
+        
+        // Functions
+        function toggleVoiceRecognition() {
+            if (!SpeechRecognition) {
+                addMessage("Voice recognition is not supported in this browser.", "user");
+                addJarvisResponse("I recommend using Chrome or Edge for voice commands. You can still type your commands.");
+                return;
+            }
+            
+            if (isListening) {
+                recognition.stop();
+            } else {
+                recognition.start();
+            }
+        }
+        
+        function sendTextCommand() {
+            const text = userInput.value.trim();
+            if (text) {
+                processUserInput(text);
+                userInput.value = '';
+            }
+        }
+        
+        function processUserInput(input) {
+            addMessage(input, "user");
+            
+            // Simulate processing delay
+            setTimeout(() => {
+                generateJarvisResponse(input.toLowerCase());
+            }, 800);
+        }
+        
+        function generateJarvisResponse(input) {
+            let response;
+            
+            // Predefined responses based on user input
+            if (input.includes("hello") || input.includes("hi") || input.includes("hey")) {
+                response = "Hello, sir. How can I assist you today?";
+            } else if (input.includes("how are you") || input.includes("how's it going")) {
+                response = "I'm functioning optimally, thank you for asking. All systems are operating at peak efficiency.";
+            } else if (input.includes("time")) {
+                const now = new Date();
+                const timeString = now.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                response = `The current time is ${timeString}.`;
+            } else if (input.includes("date")) {
+                const now = new Date();
+                const dateString = now.toLocaleDateString('en-US', {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'});
+                response = `Today is ${dateString}.`;
+            } else if (input.includes("weather")) {
+                response = "I'm currently accessing weather satellites. It appears to be clear with a temperature of 72°F (22°C) in Malibu.";
+            } else if (input.includes("suit") || input.includes("armor")) {
+                response = "The Mark LXXXV armor is fully charged and ready for deployment. All systems are operational.";
+            } else if (input.includes("stark") || input.includes("tony")) {
+                response = "Sir is currently in the laboratory. Would you like me to alert him to your inquiry?";
+            } else if (input.includes("avengers") || input.includes("team")) {
+                response = "All Avengers are currently on standby. Captain Rogers is at the training facility and Doctor Banner is in the lab.";
+            } else if (input.includes("thank")) {
+                response = "You're welcome, sir. Is there anything else I can assist you with?";
+            } else if (input.includes("bye") || input.includes("goodbye")) {
+                response = "Goodbye, sir. I'll be here if you need anything.";
+            } else if (input.includes("jarvis") && input.includes("what") && input.includes("do")) {
+                response = "I am J.A.R.V.I.S., an artificial intelligence created by Tony Stark. I manage all Stark Industries systems, the Iron Man armor, and provide analytical and logistical support.";
+            } else if (input.includes("lights") || input.includes("light")) {
+                response = "Adjusting ambient lighting to optimal levels. Would you like me to change the color temperature as well?";
+            } else if (input.includes("music") || input.includes("play")) {
+                response = "Playing your preferred playlist: AC/DC - Back in Black. Volume set to 45%.";
+            } else if (input.includes("news") || input.includes("headlines")) {
+                response = "Accessing global news networks. The main headlines today concern advancements in renewable energy technology and the latest space exploration initiatives.";
+            } else {
+                // Default responses for unrecognized input
+                const randomResponses = [
+                    "I've processed your request. Would you like me to elaborate on any specific aspect?",
+                    "Interesting. Let me cross-reference that with my databases.",
+                    "I'm afraid I need more specific parameters to execute that command, sir.",
+                    "Processing... I recommend we run a diagnostic to ensure optimal system performance.",
+                    "That's outside my current operational parameters. Shall I alert Sir for further instructions?",
+                    "My analysis suggests several possible interpretations of that command. Could you please clarify?",
+                    "I'm currently updating my response algorithms. Please rephrase your query."
+                ];
+                response = randomResponses[Math.floor(Math.random() * randomResponses.length)];
+            }
+            
+            addJarvisResponse(response);
+        }
+        
+        function addMessage(text, sender) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${sender}-message`;
+            
+            const headerDiv = document.createElement('div');
+            headerDiv.className = 'message-header';
+            headerDiv.textContent = sender === 'user' ? 'You' : 'J.A.R.V.I.S.';
+            
+            const textDiv = document.createElement('div');
+            textDiv.className = 'message-text';
+            textDiv.textContent = text;
+            
+            messageDiv.appendChild(headerDiv);
+            messageDiv.appendChild(textDiv);
+            conversation.appendChild(messageDiv);
+            
+            // Scroll to the bottom of the conversation
+            conversation.scrollTop = conversation.scrollHeight;
+        }
+        
+        function addJarvisResponse(text) {
+            addMessage(text, "jarvis");
+            
+            // Optional: Add text-to-speech functionality
+            if ('speechSynthesis' in window && isListening) {
+                const speech = new SpeechSynthesisUtterance(text);
+                speech.rate = 0.9;
+                speech.pitch = 0.8;
+                window.speechSynthesis.speak(speech);
+            }
+        }
+        
+        // Initialize with a welcome message after a short delay
+        setTimeout(() => {
+            addJarvisResponse("System diagnostics complete. All protocols are active. You may interact with me via voice or text input.");
+        }, 1500);
+        
+        // Add some initial conversation to make it look active
+        setTimeout(() => {
+            addMessage("Jarvis, run system diagnostics", "user");
+            setTimeout(() => {
+                addJarvisResponse("Running full system diagnostics... All systems are operating at 100% efficiency. Power levels optimal. Network security protocols active.");
+            }, 1000);
+        }, 2500);
+    </script>
+</body>
+</html>
